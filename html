@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProPay - Global Payment Infrastructure</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="hero">
+        <nav>
+            <div class="logo">ProPay</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#currencies">Currencies</a></li>
+                <li><a href="#calculator">Calculator</a></li>
+            </ul>
+        </nav>
+        <div class="hero-content">
+            <h1>Borderless Payments for Tomorrow's Economy</h1>
+            <p>0.8% + $0.17 per transaction - No hidden fees</p>
+            <button class="cta">Start Integrating</button>
+        </div>
+    </header>
+
+    <section id="features" class="features">
+        <div class="feature-card">
+            <img src="shield.svg" alt="Security">
+            <h3>Military-Grade Encryption</h3>
+        </div>
+        <!-- More feature cards -->
+    </section>
+
+    <section id="currencies" class="currencies">
+        <h2>Supported Payment Methods</h2>
+        <div class="currency-grid">
+            <div class="currency-item" data-currency="BTC"><img src="btc.svg"></div>
+            <!-- Add more currencies -->
+        </div>
+    </section>
+
+    <section id="calculator" class="calculator">
+        <h2>Fee Calculator</h2>
+        <input type="number" id="amount" placeholder="Enter amount ($)">
+        <div id="result"></div>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
