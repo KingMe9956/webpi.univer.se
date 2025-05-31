@@ -1,0 +1,29 @@
+# pro_pay_contract.vy (Vyper)
+# Simplified version for modNFTs.com ecosystem
+
+from vyper.interfaces import ERC20
+
+owner: public(address)
+fee_percent: public(uint256)  # 0.8% = 800 basis points
+fee_fixed: public(uint256)    # $0.17 in cents (17)
+payment_token: ERC20
+
+@external
+def __init__(token_address: address):
+    self.owner = msg.sender
+    self.fee_percent = 8  # Represents 0.8%
+    self.fee_fixed = 17   # $0.17
+    self.payment_token = ERC20(token_address)
+
+@external
+def process_payment(amount: uint256) -> uint256:
+    fee: uint256 = (amount * self.fee_percent) / 1000 + self.fee_fixed
+    assert self.payment_token.transferFrom(msg.sender, self.owner, fee), "Fee transfer failed"
+    net_amount: uint256 = amount - fee
+    assert self.payment_token.transferFrom(msg.sender, self, net_amount), "Payment failed"
+    return net_amount
+
+@external
+def withdraw(caller: address):
+    assert caller == self.owner, "Unauthorized"
+    self.payment_token.transfer(self.owner, self.payment_token.balanceOf(self))
