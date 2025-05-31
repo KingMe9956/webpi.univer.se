@@ -1,0 +1,28 @@
+# pro_pay_secure.vy (Vyper)
+from vyper.interfaces import ERC20
+
+owner: public(address)
+cloned: HashMap[address, bool]
+payment_count: public(HashMap[address, uint256])
+
+@external
+def __init__():
+    self.owner = msg.sender
+
+@external
+def process_payment(amount: uint256):
+    # Anti-cloning measure
+    assert not self.cloned[msg.sender], "Clone detected"
+    assert self.payment_count[msg.sender] < 100, "Suspicious activity"
+    
+    # Payment logic
+    fee: uint256 = (amount * 8) // 1000 + 17
+    self.payment_count[msg.sender] += 1
+    # ... rest of payment processing
+
+@external
+def verify_authenticity(signature: Bytes[65]):
+    # Cryptographic clone detection
+    message: Bytes[32] = keccak256(concat(msg.sender, self.owner))
+    signer: address = ecrecover(message, signature)
+    assert signer == self.owner, "Invalid clone signature"
