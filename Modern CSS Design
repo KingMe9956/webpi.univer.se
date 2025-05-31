@@ -1,0 +1,43 @@
+/* styles.css */
+:root {
+    --primary: #6366f1;
+    --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.hero {
+    background: var(--gradient);
+    color: white;
+    padding: 4rem 2rem;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.currency-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+}
+
+.currency-item {
+    padding: 1rem;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.currency-item:hover {
+    transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+    .currency-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
