@@ -1,0 +1,25 @@
+// app.js
+document.addEventListener('DOMContentLoaded', () => {
+    // Fee Calculator
+    const amountInput = document.getElementById('amount');
+    const resultDiv = document.getElementById('result');
+    
+    amountInput.addEventListener('input', (e) => {
+        const amount = parseFloat(e.target.value);
+        if (!isNaN(amount)) {
+            const fee = (amount * 0.008) + 0.17;
+            resultDiv.innerHTML = `
+                <p>Fee: $${fee.toFixed(2)}</p>
+                <p>Net Amount: $${(amount - fee).toFixed(2)}</p>
+            `;
+        }
+    });
+
+    // Currency Interactions
+    document.querySelectorAll('.currency-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const currency = item.dataset.currency;
+            alert(`Selected: ${currency}`);
+        });
+    });
+});
