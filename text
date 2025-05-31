@@ -1,0 +1,19 @@
+def process_payment(self, amount, currency):
+    # Assuming amount is in USD for simplicity
+    fee = (amount * self.fee_percent / 100) + self.fee_fixed
+    net_amount = amount - fee
+    self.transactions.append({
+        'amount': amount,
+        'currency': currency,
+        'fee': fee,
+        'net_amount': net_amount,
+        'timestamp': datetime.now()
+    })
+    return net_amount
+
+def withdraw_fees(self, caller):
+    if caller != self.owner:
+        raise Exception("Unauthorized")
+    # Logic to transfer fees to owner
+    total_fees = sum(t['fee'] for t in self.transactions)
+    return total_fees
