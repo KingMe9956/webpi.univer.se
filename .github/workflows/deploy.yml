@@ -1,0 +1,91 @@
+# .github/workflows/deploy.yml# .github/workflows/deploy.yml
+name: ProPay Deployment
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  DOCKER_IMAGE: pro-pay-system
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Build Docker Image
+      run: |
+        docker build -t $DOCKER_IMAGE .
+        echo "SECRET_KEY=$(openssl rand -hex 32)" >> $GITHUB_ENV
+        
+    - name: Deploy to AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Run Security Scan
+      uses: shiftleft/scan-action@v2
+      with:
+        output: reports/
+        
+    - name: Notify SignalFx
+      run: |
+        curl -X POST "https://ingest.signalfx.com/v2/datapoint" \
+          -H "X-SF-Token: ${{ secrets.SIGNALFX_TOKEN }}" \
+          -d '{"gauge": [{"metric": "deployment.success", "value": 1}]}'
+name: ProPay Deployment
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  DOCKER_IMAGE: pro-pay-system
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Build Docker Image
+      run: |
+        docker build -t $DOCKER_IMAGE .
+        echo "SECRET_KEY=$(openssl rand -hex 32)" >> $GITHUB_ENV
+        
+    - name: Deploy to AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Run Security Scan
+      uses: shiftleft/scan-action@v2
+      with:
+        output: reports/
+        
+    - name: Notify SignalFx
+      run: |
+        curl -X POST "https://ingest.signalfx.com/v2/datapoint" \
+          -H "X-SF-Token: ${{ secrets.SIGNALFX_TOKEN }}" \
+          -d '{"gauge": [{"metric": "deployment.success", "value": 1}]}'
