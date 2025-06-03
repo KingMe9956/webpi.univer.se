@@ -47,20 +47,7 @@ Global Payment Infrastructure Development
 - SLA compliance tracking
 
 
-**Deployment Process:**
-1. Clone repo with submodules
-```bash
-git clone --recurse-submodules https://github.com/kingme9956uip-secure/propay-system
-```
-2. Configure environment
-```bash
-cp .env.example .env
-nano .env # Add your credentials
-```
-3. Trigger automated deployment
-```bash
-git push origin main
-```
+
 
 
 **Additional Security Features:**
@@ -83,13 +70,7 @@ git push origin main
    - 5% Referral/rewards
 5. Real-time revenue claiming via ZK proofs
 
-**To Run Locally:**
-```bash
-QUANTUM_MODE=simulation \
-UIP_SECRET=your_secret \
-PQC_PUBLIC_KEY=dil5_pub_... \
-npm run start:quantum
-```
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/KingMe9956)
 
 This architecture provides military-grade quantum security while maintaining the flexibility needed for global financial operations. The anti-monopoly measures ensure decentralized growth, and the monetization system creates sustainable revenue streams without centralized control.
 
