@@ -44,3 +44,33 @@ jobs:
         curl -X POST "https://ingest.signalfx.com/v2/datapoint" \
           -H "X-SF-Token: ${{ secrets.SIGNALFX_TOKEN }}" \
           -d '{"gauge": [{"metric": "deployment.success", "value": 1}]}'
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Terraform Apply
+      run: |
+        cd terraform
+        terraform init
+        terraform apply -auto-approve
+
+    - name: Notify SignalFx
+      run: |
+        curl -X POST "https://ingest.signalfx.com/v2/event?api_token=${{ secrets.SIGNALFX_TOKEN }}" \
+          -d '{"category": "DEPLOYMENT", "eventType": "Deployment", "properties": {"service": "propay", "deployer": "github"}}'
