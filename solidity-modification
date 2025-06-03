@@ -1,0 +1,28 @@
+// contracts/ProPayQuantum.sol
+pragma solidity ^0.8.19;
+
+// ... imports ...
+
+contract ProPayQuantum is EIP712 {
+    address public treasury;
+    
+    constructor(address _treasury) EIP712("ProPay", "1") {
+        treasury = _treasury; // Set your wallet here during deployment
+    }
+    
+    function processPayment(
+        Payment calldata payment,
+        bytes calldata classicalSig,
+        bytes calldata quantumSig
+    ) external payable {
+        // ... verification logic ...
+        
+        uint256 fee = (payment.amount * 8) / 1000 + 17;
+        
+        // Send fee to treasury
+        (bool success, ) = payable(treasury).call{value: fee}("");
+        require(success, "Transfer failed");
+        
+        // ... rest of the code ...
+    }
+}
