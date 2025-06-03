@@ -1,0 +1,51 @@
+// ProPayQuantum.sol
+pragma solidity ^0.8.19;
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "./Dilithium.sol"; // Post-quantum library
+
+contract ProPayQuantum is EIP712 {
+    using ECDSA for bytes32;
+    
+    struct Payment {
+        address user;
+        uint256 amount;
+        bytes32 currency;
+        uint256 nonce;
+    }
+    
+    mapping(address => uint256) public nonces;
+    address public treasury;
+    
+    constructor() EIP712("ProPay", "1") {
+        treasury = msg.sender;
+    }
+    
+    function processPayment(
+        Payment calldata payment,
+        bytes calldata classicalSig,
+        bytes calldata quantumSig
+    ) external payable {
+        // Verify classical signature
+        bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
+            keccak256("Payment(address user,uint256 amount,bytes32 currency,uint256 nonce)"),
+            payment.user,
+            payment.amount,
+            payment.currency,
+            payment.nonce
+        ));
+        
+        address signer = ECDSA.recover(digest, classicalSig);
+        require(signer == payment.user, "Invalid signature");
+        
+        // Verify quantum signature
+        require(Dilithium.verify(payment.user, digest, quantumSig), "Quantum verification failed");
+        
+        // Process payment
+        uint256 fee = (payment.amount * 8) / 1000 + 17;
+        (bool success, ) = treasury.call{value: fee}("");
+        require(success, "Transfer failed");
+        
+        nonces[payment.user]++;
+    }
+}
