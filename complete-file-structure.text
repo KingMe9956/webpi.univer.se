@@ -1,0 +1,28 @@
+propay/
+├── quantum-server/
+│   ├── server.js
+│   ├── i18n.js
+│   ├── monetization.js
+│   ├── anti-monopoly.js
+│   └── Dockerfile.quantum
+├── contracts/
+│   ├── ProPayQuantum.sol
+│   ├── Dilithium.sol
+│   └── PaymentVault.sol
+├── frontend/
+│   ├── i18n/
+│   │   ├── en.json
+│   │   ├── es.json
+│   │   └── ar.json
+│   ├── quantum-auth.js
+│   └── uip-secure-integration.js
+├── deployment/
+│   ├── akash-deploy.yml
+│   ├── terraform/
+│   └── signalfx-monitoring/
+├── scripts/
+│   ├── activate-shield.js
+│   └── key-rotation.js
+└── security/
+    ├── quantum-keys.gpg
+    └── anti-cloning-cert.pem
