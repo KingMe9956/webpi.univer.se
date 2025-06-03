@@ -1,0 +1,41 @@
+# deploy.yml
+name: Quantum-Secure Deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-quantum
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          quantum-key: ${{ secrets.QUANTUM_SIGNING_KEY }}
+          
+      - name: Build Quantum Container
+        run: |
+          docker build -t propay-quantum \
+            --build-arg PQC_KEY=${{ secrets.PQC_PRIVATE_KEY }} \
+            --build-arg UIP_SECRET=${{ secrets.UIP_SECRET }} \
+            .
+          
+      - name: Deploy to Akash Network
+        uses: akash-network/deploy-action@v1
+        with:
+          dseq: ${{ steps.akash.outputs.dseq }}
+          cert: ${{ secrets.AKASH_CERT }}
+          
+      - name: Activate Anti-Monopoly Shield
+        run: |
+          node scripts/activate-shield.js \
+            --network mainnet \
+            --key ${{ secrets.DEFENDER_KEY }}
+            
+      - name: Monitor with SignalFx
+        uses: signalfx/action@v2
+        with:
+          api_token: ${{ secrets.SIGNALFX_TOKEN }}
+          metrics: |
+            deployment.success:1|g
+            quantum.operations:100|g
