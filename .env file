@@ -2,3 +2,8 @@
 UIP_API_KEY=sk_live_1a2B3c4D5e6F7g8H9i0J
 UIP_CLIENT_ID=uip.propay.8ZQ3v6Lx
 UIP_SECRET=ufhsd87y34hrg8734gf8734gf8743
+
+# .env
+TREASURY_ADDRESS="0x6aF3fB556c57f4d973a3AA7B80Bb5E643e03690e"
+PQC_PUBLIC_KEY="your_quantum_public_key"
+UIP_SECRET="your_uip_secret"
