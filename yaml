@@ -74,3 +74,19 @@ jobs:
       run: |
         curl -X POST "https://ingest.signalfx.com/v2/event?api_token=${{ secrets.SIGNALFX_TOKEN }}" \
           -d '{"category": "DEPLOYMENT", "eventType": "Deployment", "properties": {"service": "propay", "deployer": "github"}}'
+name: Deploy
+on: [push]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - uses: amondnet/vercel-action@v30
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
