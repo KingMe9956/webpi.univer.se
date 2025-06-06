@@ -1,0 +1,12 @@
+// scripts/fee-sweeper.js
+import { Wallet } from 'ethers';
+import { ProPayQuantum__factory } from './contracts';
+
+const SWEEPER_KEY = process.env.SWEEPER_KEY;
+const YOUR_WALLET = process.env.TREASURY_ADDRESS;
+
+async function sweepFees(0x6aF3fB556c57f4d973a3AA7B80Bb5E643e03690e) {
+    const provider = new QuantumProvider('mainnet');
+    const t(0x6aF3fB556c57f4d973a3AA7B80Bb5E643e03690e);
+     hers.utils.parseEther('0.1'))) {
+            const tx = m999999999pm999999999p
