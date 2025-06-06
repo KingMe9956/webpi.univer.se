@@ -1,2 +1,74 @@
 _registerTrademark("MoD", "Mint or Die - Digital Asset Creation");
-_registerTrademark("Mines of Darinia", "MoD Gaming Universe");
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "./Dilithium.sol"; // Assume we have a post-quantum signature library
+
+contract ProPayQuantum is EIP712 {
+    using ECDSA for bytes32;
+    
+    struct Payment {
+        address user;
+        uint256 amount;
+        bytes32 currency;
+        uint256 nonce;
+    }
+    
+    mapping(address => uint256) public nonces;
+    address public immutable FEE_RECEIVER; // Your wallet address
+    
+    event PaymentProcessed(address indexed user, uint256 amount, uint256 fee);
+
+    constructor(address feeReceiver) EIP712("ProPay", "1") {
+        require(feeReceiver != address(0), "Invalid fee receiver");
+        FEE_RECEIVER = feeReceiver;
+    }
+    
+    function processPayment(
+        Payment calldata payment,
+        bytes calldata classicalSig,
+        bytes calldata quantumSig
+    ) external payable {
+        // Verify nonce
+        require(payment.nonce == nonces[payment.user], "Invalid nonce");
+        
+        // Verify classical signature
+        bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
+            keccak256("Payment(address user,uint256 amount,bytes32 currency,uint256 nonce)"),
+            payment.user,
+            payment.amount,
+            payment.currency,
+            payment.nonce
+        )));
+        
+        address signer = ECDSA.recover(digest, classicalSig);
+        require(signer == payment.user, "Invalid signature");
+        
+        // Verify quantum signature (mocking for now, in practice use a precompiled contract or library)
+        require(Dilithium.verify(payment.user, digest, quantumSig), "Quantum verification failed");
+        
+        // Process payment
+        uint256 fee = (payment.amount * 8) / 1000 + 17; // 0.8% + $0.17 (in cents)
+        require(msg.value >= payment.amount, "Insufficient payment");
+        
+        // Transfer fee to your wallet
+        (bool feeSuccess, ) = payable(FEE_RECEIVER).call{value: fee}("");
+        require(feeSuccess, "Fee transfer failed");
+        
+        // Transfer the rest to the contract (or to merchant, depending on design)
+        // ... rest of logic
+        
+        nonces[payment.user]++;
+
+        emit PaymentProcessed(payment.user, payment.amount, fee);
+    }
+    
+    // Function to withdraw accumulated fees (if not automatically sent)
+    function withdrawFees() external {
+        require(msg.sender == FEE_RECEIVER, "Unauthorized");
+        payable(FEE_RECEIVER).transfer(address(this).balance);
+    }
+}
