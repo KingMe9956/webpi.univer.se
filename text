@@ -17,3 +17,4 @@ def withdraw_fees(self, caller):
     # Logic to transfer fees to owner
     total_fees = sum(t['fee'] for t in self.transactions)
     return total_fees
+
