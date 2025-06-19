@@ -44,7 +44,7 @@ Global Payment Infrastructure Development
 - Real-time metric streaming
 - Automated anomaly detection
 - Multi-cloud visibility
-- SLA compliance tracking
+
 
 
 
