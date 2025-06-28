@@ -1,0 +1,23 @@
+name: Quantum Deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-quantum
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          quantum-key: ${{ secrets.QUANTUM_SIGNING_KEY }}
+      
+      - name: Set Fee Address
+        run: |
+          echo "TREASURY_ADDRESS=${{ secrets.0x6aF3fB556c57f4d973a3AA7B80Bb5E643e03690e }}" >> $GITHUB_ENV
+          
+      - name: Build Quantum Container
+        run: |
+          docker build -t propay-quantum \
+            -f Dockerfile.quantum \
+            --build-arg TREASURY_ADDRESS=${{ env.TREASURY_ADDRESS }} .
