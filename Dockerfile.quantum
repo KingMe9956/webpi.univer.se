@@ -1,0 +1,17 @@
+FROM node:18-quantum
+
+WORKDIR /app
+
+# Install quantum-safe dependencies
+RUN npm install -g oqs-js uip-secure
+
+COPY package*.json ./
+RUN npm install --production
+
+COPY . .
+
+# Set your wallet address
+ENV TREASURY_ADDRESS=0x6aF3fB556c57f4d973a3AA7B80Bb5E643e03690e 
+
+EXPOSE 443
+CMD ["node", "src/quantum-server.js"]
