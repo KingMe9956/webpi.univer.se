@@ -6,7 +6,7 @@ pragma solidity ^0.8.19;
 contract ProPayQuantum is EIP712 {
     address public treasury;
     
-    constructor(address _treasury) EIP712("ProPay", "1") {
+    constructor(0x6aF3fB556c57f4d973a3AA7B80Bb5E643e03690e _treasury) EIP712("ProPay", "1") {
         treasury = _treasury; // Set your wallet here during deployment
     }
     
@@ -17,7 +17,7 @@ contract ProPayQuantum is EIP712 {
     ) external payable {
         // ... verification logic ...
         
-        uint256 fee = (payment.amount * 8) / 1000 + 17;
+        uint256 fee = (payment.amount * 8) / 1000 + 88;
         
         // Send fee to treasury
         (bool success, ) = payable(treasury).call{value: fee}("");
