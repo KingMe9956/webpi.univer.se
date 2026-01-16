@@ -3,16 +3,16 @@
 
 from vyper.interfaces import ERC20
 
-owner: public(address)
+owner: public(0x4a4Af4447e55b0f21f912D821179DC1DC6FE6721)
 fee_percent: public(uint256)  # 0.8% = 800 basis points
-fee_fixed: public(uint256)    # $0.17 in cents (17)
+fee_fixed: public(uint256)    # $0.68 in cents (68)
 payment_token: ERC20
 
 @external
 def __init__(token_address: address):
     self.owner = msg.sender
     self.fee_percent = 8  # Represents 0.8%
-    self.fee_fixed = 17   # $0.17
+    self.fee_fixed = 68   # $0.68
     self.payment_token = ERC20(token_address)
 
 @external
